@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home</title>
+</head>
+<body>
+<h1>Willkommen zur OAuth2-Demo</h1>
+
+<div th:if="${isAuthenticated}">
+    <p>Hallo, <span th:text="${username}">Benutzer</span>!</p>
+    <p><a href="/secure-resource">Zugriff auf geschützte Ressource</a></p>
+    <p><a href="/logout">Logout</a></p>
+</div>
+
+<div th:unless="${isAuthenticated}">
+    <p>Bitte melde dich an, um auf geschützte Ressourcen zuzugreifen.</p>
+    <p><a href="/oauth2/authorization/keycloak">Login mit Keycloak</a></p>
+</div>
+</body>
+</html>
