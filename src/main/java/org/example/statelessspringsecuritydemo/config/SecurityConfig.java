@@ -81,7 +81,7 @@ public class SecurityConfig {
                 // Logout-Konfiguration
                 .logout(logout -> logout
                         .logoutSuccessUrl("/")
-                        .deleteCookies("access_token")
+                        .deleteCookies("access_token", "refresh_token")
                 );
 
         return http.build();

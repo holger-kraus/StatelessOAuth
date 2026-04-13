@@ -8,8 +8,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtValidationException;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import reactor.core.publisher.Mono;
 
 import org.springframework.stereotype.Component;
@@ -30,6 +30,19 @@ public class JwtTokenProvider {
         try {
             jwtDecoder.decode(token).block();
             return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean isTokenExpired(String token) {
+        try {
+            jwtDecoder.decode(token).block();
+            return false;
+        } catch (JwtValidationException e) {
+            return e.getErrors().stream()
+                    .anyMatch(err -> err.getDescription() != null &&
+                                    err.getDescription().toLowerCase().contains("expired"));
         } catch (Exception e) {
             return false;
         }

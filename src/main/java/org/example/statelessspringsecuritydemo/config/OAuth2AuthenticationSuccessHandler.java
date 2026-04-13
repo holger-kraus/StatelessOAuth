@@ -82,6 +82,19 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
             logger.debug("Setting access_token cookie with expiry in {} seconds", expirySeconds);
             response.addCookie(cookie);
+
+            // Refresh-Token in Cookie speichern
+            if (client.getRefreshToken() != null) {
+                Cookie refreshCookie = new Cookie("refresh_token", client.getRefreshToken().getTokenValue());
+                refreshCookie.setPath("/");
+                refreshCookie.setHttpOnly(true);
+                refreshCookie.setMaxAge(30 * 24 * 60 * 60); // 30 Tage (Keycloak-Standard)
+                // Im Produktiveinsatz: refreshCookie.setSecure(true);
+                response.addCookie(refreshCookie);
+                logger.debug("refresh_token Cookie gesetzt");
+            } else {
+                logger.warn("Kein Refresh-Token vom OAuth2-Provider erhalten");
+            }
         } catch (Exception e) {
             logger.error("Error in OAuth2AuthenticationSuccessHandler", e);
         }
